@@ -1,9 +1,11 @@
 package com.example.news;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -66,7 +68,7 @@ public class MainActivity extends AppCompatActivity implements CategoryRVAdapter
          private void getNews(String category){
         loadingPB.setVisibility(View.VISIBLE);
         articlesArrayList.clear();
-        String categoryURL ="https://newsapi.org/v2/top-headlines/sources?category="+category+"&apiKey=b3c590d6fbd54abbbf479769da1a185a";
+        String categoryURL ="https://newsapi.org/v2/top-headlines?countyr=in&category="+category+"&apikey=b3c590d6fbd54abbbf479769da1a185a";
         String url ="https://newsapi.org/v2/top-headlines?country=in&excludeDomains=stackoverflow.com&sortBy=pubishedAt&language=en&apikey=b3c590d6fbd54abbbf479769da1a185a";
         String BASE_URL ="https://newsapi.org/";
 
@@ -83,14 +85,20 @@ public class MainActivity extends AppCompatActivity implements CategoryRVAdapter
              }
 
              call.enqueue(new Callback<NewsModel>() {
+                 @SuppressLint("NotifyDataSetChanged")
                  @Override
-                 public void onResponse(Call<NewsModel> call, Response<NewsModel> response) {
+                 public void onResponse(Call<NewsModel> call, @NonNull Response<NewsModel> response) {
                      NewsModel newsModel = response.body();
                      loadingPB.setVisibility(View.GONE);
-                     ArrayList<Articles> articles = newsModel.getArticles();
-                     for (int i=0 ; i<articles.size(); i++){
-                         articlesArrayList.add(new Articles(articles.get(i).getTitle(),articles.get(i).getDescription(),articles.get(i).getUrlToImage(),articles.get(i).getUrl(),articles.get(i).getContent()));
+                     ArrayList<Articles> articles = null;
+                     if (newsModel != null) {
+                         articles = newsModel.getArticles();
+                     }
+                     if (articles !=null  ) {
+                         for (int i = 0; i < articles.size(); i++) {
+                         articlesArrayList.add(new Articles(articles.get(i).getTitle(), articles.get(i).getDescription(), articles.get(i).getUrlToImage(), articles.get(i).getUrl(), articles.get(i).getContent()));
 
+                     }
                      }
                      newsRVAdapter.notifyDataSetChanged();
                  }

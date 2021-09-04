@@ -7,7 +7,6 @@ import java.util.ArrayList;
 public class NewsModel {
     private int totalResults;
     private String status;
-    @SerializedName("sources")
     private ArrayList<Articles> articles;
 
     public NewsModel(int totalResults, String status, ArrayList<Articles> articles) {
